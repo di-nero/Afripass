@@ -6,9 +6,9 @@ services:
     image: postgres:17
     container_name: afripass-postgres
     environment:
-      POSTGRES_DB: afripass
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     ports:
       - "5432:5432"
     volumes:
