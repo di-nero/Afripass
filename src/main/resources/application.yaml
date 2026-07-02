@@ -7,9 +7,9 @@ spring:
       enabled: false
 
   datasource:
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
-    url: jdbc:postgresql://postgres:5432/afripass
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
     driver-class-name: org.postgresql.Driver
 
   rabbitmq:
@@ -18,9 +18,10 @@ spring:
     username: ${RABBITMQ_USERNAME}
     password: ${RABBITMQ_PASSWORD}
 
-  redis:
-    host: ${REDIS_HOST}
-    port: 6379
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: 6379
 
   jpa:
     hibernate:
@@ -37,7 +38,7 @@ stripe:
 
 logging:
  level:
-  org.springframework.security: DEBUG
+   org.springframework.security: DEBUG
 
 server:
   port: 8080
