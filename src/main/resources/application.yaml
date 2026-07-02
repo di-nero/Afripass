@@ -23,7 +23,6 @@ spring:
     port: 6379
 
   jpa:
-    properties:
     hibernate:
       ddl-auto: update
     show-sql: true

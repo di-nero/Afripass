@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "booking")
-@EqualsAndHashCode(of = "id")
+@EqualsAndHashCode(of = "id") //find meaning
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
