@@ -1,5 +1,6 @@
 package com.AfriPass.afripass.Model;
 
+import com.AfriPass.afripass.Enums.BookingStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;

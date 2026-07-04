@@ -1,6 +1,7 @@
 package com.AfriPass.afripass.Model;
 
 
+import com.AfriPass.afripass.Enums.Role;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.*;

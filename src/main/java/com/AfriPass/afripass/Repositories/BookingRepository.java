@@ -1,8 +1,7 @@
 package com.AfriPass.afripass.Repositories;
 
 import com.AfriPass.afripass.Model.Booking;
-import com.AfriPass.afripass.Model.BookingStatus;
-import com.AfriPass.afripass.Model.User;
+import com.AfriPass.afripass.Enums.BookingStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

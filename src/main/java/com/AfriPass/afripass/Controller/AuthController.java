@@ -1,5 +1,6 @@
 package com.AfriPass.afripass.Controller;
 
+import com.AfriPass.afripass.DTOs.ApiResponse;
 import com.AfriPass.afripass.DTOs.LoginRequest;
 import com.AfriPass.afripass.DTOs.LoginResponse;
 import com.AfriPass.afripass.DTOs.RegisterRequest;
@@ -18,21 +19,16 @@ public class AuthController {
     private AuthSerevice authSerevice;
 
     @PostMapping("/register")
-    public ResponseEntity<String> register(@Valid @RequestBody RegisterRequest request){
-        System.out.println("REGISTER ENDPOINT HIT");
-        System.out.println("Request: " + request);
+    public ResponseEntity<ApiResponse<Void>> register(@Valid @RequestBody RegisterRequest request) {
         authSerevice.register(request);
-        return ResponseEntity.ok("Registration successful");
+        return ResponseEntity.ok(ApiResponse.success("Registered successfully" , null));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@Valid@RequestBody LoginRequest request){
-        System.out.println("login hit");
-        return ResponseEntity.ok(authSerevice.login(request));
-    }
+    public ResponseEntity<ApiResponse<LoginResponse>> login(@Valid @RequestBody LoginRequest request) {
 
-    @GetMapping("/test")
-    public String test() {
-        return "controller is working";
+        LoginResponse response = authSerevice.login(request);
+
+        return ResponseEntity.ok(ApiResponse.success("Login successful" , response));
     }
 }

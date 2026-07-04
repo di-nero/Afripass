@@ -6,7 +6,7 @@ import com.AfriPass.afripass.Security.JwtUtil;
 import com.AfriPass.afripass.DTOs.LoginRequest;
 import com.AfriPass.afripass.DTOs.LoginResponse;
 import com.AfriPass.afripass.DTOs.RegisterRequest;
-import com.AfriPass.afripass.Model.Role;
+import com.AfriPass.afripass.Enums.Role;
 import com.AfriPass.afripass.Model.User;
 import com.AfriPass.afripass.Repositories.UserRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -51,14 +51,7 @@ public class AuthSerevice {
 
     public LoginResponse login(LoginRequest request){
 
-       try { authenticationManager
-                .authenticate(new UsernamePasswordAuthenticationToken(request.getEmail() ,
-                        request.getPassword()));} catch (Exception e) {
-           System.out.println("AUTH FAILED TYPE: " + e.getClass().getName());
-           System.out.println("AUTH FAILED MESSAGE: " + e.getMessage());
-           System.out.println("AUTH FAILED CAUSE: " + e.getCause());
-           throw e;
-       }
+       authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail() , request.getPassword()));
         String token = jwtUtil.generateToken(request.getEmail());
 
         log.info("User logged in: {}" , request.getEmail());

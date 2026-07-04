@@ -1,7 +1,7 @@
 package com.AfriPass.afripass.DTOs;
 
 
-import com.AfriPass.afripass.Model.BookingStatus;
+import com.AfriPass.afripass.Enums.BookingStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

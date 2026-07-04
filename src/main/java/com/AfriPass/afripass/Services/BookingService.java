@@ -5,7 +5,7 @@ import com.AfriPass.afripass.DTOs.BookingResponse;
 import com.AfriPass.afripass.DTOs.EventDetails;
 import com.AfriPass.afripass.Exception.ResourceNotFoundException;
 import com.AfriPass.afripass.Model.Booking;
-import com.AfriPass.afripass.Model.BookingStatus;
+import com.AfriPass.afripass.Enums.BookingStatus;
 import com.AfriPass.afripass.Model.EventInventory;
 import com.AfriPass.afripass.Model.User;
 import com.AfriPass.afripass.Repositories.BookingRepository;

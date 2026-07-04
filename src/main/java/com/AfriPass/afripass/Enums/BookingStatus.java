@@ -1,4 +1,4 @@
-package com.AfriPass.afripass.Model;
+package com.AfriPass.afripass.Enums;
 
 public enum BookingStatus {
 

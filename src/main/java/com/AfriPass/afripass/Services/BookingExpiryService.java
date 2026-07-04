@@ -1,7 +1,7 @@
 package com.AfriPass.afripass.Services;
 
 import com.AfriPass.afripass.Model.Booking;
-import com.AfriPass.afripass.Model.BookingStatus;
+import com.AfriPass.afripass.Enums.BookingStatus;
 import com.AfriPass.afripass.Model.EventInventory;
 import com.AfriPass.afripass.Repositories.BookingRepository;
 import com.AfriPass.afripass.Repositories.EventInventoryRepository;
