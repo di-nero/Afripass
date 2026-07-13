@@ -1,16 +1,16 @@
 package com.AfriPass.afripass.Services;
 
 
-import com.AfriPass.afripass.Exception.ConflictException;
-import com.AfriPass.afripass.Security.JwtUtil;
 import com.AfriPass.afripass.DTOs.LoginRequest;
 import com.AfriPass.afripass.DTOs.LoginResponse;
 import com.AfriPass.afripass.DTOs.RegisterRequest;
 import com.AfriPass.afripass.Enums.Role;
+import com.AfriPass.afripass.Exception.ConflictException;
 import com.AfriPass.afripass.Model.User;
 import com.AfriPass.afripass.Repositories.UserRepository;
+import com.AfriPass.afripass.Security.JwtUtil;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -18,24 +18,19 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
-public class AuthSerevice {
+@RequiredArgsConstructor
+public class AuthService {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final AuthenticationManager authenticationManager;
+    private final JwtUtil jwtUtil;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Autowired
-    private AuthenticationManager authenticationManager;
-
-    @Autowired
-    private JwtUtil jwtUtil;
-
-    public String register(RegisterRequest request){
+    public String register(RegisterRequest request) {
+        String email = request.getEmail();
 
         // check if user email already exists
-        if (userRepository.findByEmail(request.getEmail()).isPresent()){
+        if (userRepository.findByEmail(email).isPresent()) {
             throw new ConflictException("Email already registered: " + request.getEmail());
         }
         User user = User.builder()
@@ -45,17 +40,18 @@ public class AuthSerevice {
                 .role(Role.USER)
                 .build();
         userRepository.save(user);
-        log.info("New user registered: {}" , request.getEmail());
+        log.info("New user registered: {}", request.getEmail());
         return "Registration successful";
     }
 
-    public LoginResponse login(LoginRequest request){
+    public LoginResponse login(LoginRequest request) {
+        String email = request.getEmail();
 
-       authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail() , request.getPassword()));
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, request.getPassword()));
         String token = jwtUtil.generateToken(request.getEmail());
 
-        log.info("User logged in: {}" , request.getEmail());
-        return new LoginResponse(token , request.getEmail());
+        log.info("User logged in: {}", request.getEmail());
+        return new LoginResponse(token, request.getEmail());
     }
 
 }

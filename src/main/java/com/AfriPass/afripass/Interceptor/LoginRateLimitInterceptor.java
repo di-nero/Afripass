@@ -7,11 +7,13 @@ import io.github.bucket4j.Refill;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import java.time.Duration;
 import java.util.concurrent.ConcurrentHashMap;
 
+@Component
 @Slf4j
 public class LoginRateLimitInterceptor implements HandlerInterceptor {
 

@@ -19,13 +19,13 @@ public class EventController {
     private EventService eventService;
 
     @GetMapping
-    public ResponseEntity<List<EventDetails>> getAllEvents(){
+    public ResponseEntity<List<EventDetails>> getAllEvents() {
         System.out.println("endpoint was hit");
-        return ResponseEntity.ok(eventService.getAllEvent());
+        return ResponseEntity.ok(eventService.getAllEvents());
     }
 
     @GetMapping("/{id}")
-    public EventDetails getEventById(@PathVariable Long id){
+    public EventDetails getEventById(@PathVariable Long id) {
         return eventService.getEventById(id);
     }
 }

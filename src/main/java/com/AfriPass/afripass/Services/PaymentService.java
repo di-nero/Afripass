@@ -4,10 +4,10 @@ package com.AfriPass.afripass.Services;
 import com.AfriPass.afripass.DTOs.EventDetails;
 import com.AfriPass.afripass.DTOs.PaymentRequest;
 import com.AfriPass.afripass.DTOs.TicketResponse;
+import com.AfriPass.afripass.Enums.BookingStatus;
 import com.AfriPass.afripass.Enums.PaymentStatus;
 import com.AfriPass.afripass.Exception.*;
 import com.AfriPass.afripass.Model.Booking;
-import com.AfriPass.afripass.Enums.BookingStatus;
 import com.AfriPass.afripass.Model.Ticket;
 import com.AfriPass.afripass.Model.User;
 import com.AfriPass.afripass.Repositories.BookingRepository;
@@ -40,7 +40,7 @@ public class PaymentService {
     private final UserRepository userRepository;
     private final TicketRepository ticketRepository;
     private final EventService eventService;
-    private final EventPublisher eventPublisher;
+    private final BookingEventPublisher bookingEventPublisher;
 
     @Transactional
     public List<TicketResponse> processPayment(PaymentRequest request) throws StripeException {
@@ -49,7 +49,7 @@ public class PaymentService {
         User user = getAuthenticatedUser();
 
         //get the booking
-        Booking booking = getValidBooking(request.getBookingId() , user);
+        Booking booking = getValidBooking(request.getBookingId(), user);
 
         //so we can pull event name and event date for the ticket and the publisher
         EventDetails eventDetails = eventService.getEventById(booking.getEventId());
@@ -57,7 +57,7 @@ public class PaymentService {
         //per ticket amount calculation
         //total amount / quantity = price per ticket
         BigDecimal perTicketAmount = eventDetails.getPrice();
-        BigDecimal totalAmount = calculateTotalAmount(perTicketAmount , booking.getQuantity());
+        BigDecimal totalAmount = calculateTotalAmount(perTicketAmount, booking.getQuantity());
 
         //stripe
         PaymentIntent intent;
@@ -102,7 +102,7 @@ public class PaymentService {
         bookingRepository.save(booking);
         log.info("Booking {} confirmed for user {}", booking.getId(), user.getEmail());
 
-        List<Ticket> tickets = generateTicket(booking , user , eventDetails , perTicketAmount);
+        List<Ticket> tickets = generateTickets(booking, user, eventDetails, perTicketAmount);
         ticketRepository.saveAll(tickets);
         log.info("Generated {} tickets for bookingId={}", tickets.size(), booking.getId());
 
@@ -110,7 +110,7 @@ public class PaymentService {
                 .map(Ticket::getTicketNumber)
                 .toList();
 
-        eventPublisher.publishBookingConfirmed(booking, user, eventDetails, ticketNumbers, totalAmount);
+        bookingEventPublisher.publishBookingConfirmed(booking, user, eventDetails, ticketNumbers, totalAmount);
 
         return tickets.stream().map(
                         t -> new TicketResponse(t.getTicketNumber(),
@@ -131,7 +131,7 @@ public class PaymentService {
 
     public PaymentIntent paymentFallback(PaymentIntentCreateParams params, Throwable t) {
         log.error("Payment circuit open or retries exhausted: {}", t.getMessage());
-        throw new RuntimeException("Payment service currently unavailable. " +
+        throw new PaymentServiceUnavailableException("Payment service currently unavailable. " +
                 "Your booking is held. please try again shortly");
     }
 
@@ -140,7 +140,7 @@ public class PaymentService {
         return userRepository.findByEmail(email).orElseThrow(() -> new ResourceNotFoundException("User not found: " + email));
     }
 
-    private Booking getValidBooking(Long bookingId , User user) {
+    private Booking getValidBooking(Long bookingId, User user) {
         Booking booking = bookingRepository.findById(bookingId).orElseThrow(() -> new ResourceNotFoundException("Booking not found: " + bookingId));
 
         if (!booking.getUser().getId().equals(user.getId())) {
@@ -153,7 +153,7 @@ public class PaymentService {
         return booking;
     }
 
-    private List<Ticket> generateTicket(Booking booking , User user , EventDetails eventDetails , BigDecimal amount){
+    private List<Ticket> generateTickets(Booking booking, User user, EventDetails eventDetails, BigDecimal amount) {
         List<Ticket> tickets = new ArrayList<>();
         for (int i = 0; i < booking.getQuantity(); i++) {
 
@@ -171,15 +171,15 @@ public class PaymentService {
         return tickets;
     }
 
-    private BigDecimal calculateTotalAmount(BigDecimal perTicketAmount , int quantity){
+    private BigDecimal calculateTotalAmount(BigDecimal perTicketAmount, int quantity) {
         return perTicketAmount.multiply(BigDecimal.valueOf(quantity));
     }
 
-    private long convertAmountToCent(BigDecimal totalAmount){
+    private long convertAmountToCent(BigDecimal totalAmount) {
         return totalAmount.multiply(BigDecimal.valueOf(100)).longValue();
     }
 
-    public void validatePaymentSucceeded(PaymentIntent intent){
+    private void validatePaymentSucceeded(PaymentIntent intent) {
         if (!PaymentStatus.SUCCEEDED.getValue().equals(intent.getStatus())) {
             throw new PaymentServiceUnavailableException("Payment did not succeed , status: " + intent.getStatus());
         }

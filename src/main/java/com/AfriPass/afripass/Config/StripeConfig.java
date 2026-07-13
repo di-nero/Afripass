@@ -1,9 +1,9 @@
 package com.AfriPass.afripass.Config;
 
+import com.stripe.Stripe;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
-import com.stripe.Stripe;
 
 @Configuration
 public class StripeConfig {
@@ -12,9 +12,8 @@ public class StripeConfig {
     private String stripeSecretKey;
 
     @PostConstruct
-    public void init(){
+    public void init() {
         Stripe.apiKey = stripeSecretKey;
-        System.out.println("Stripe key loaded: " + (stripeSecretKey != null && !stripeSecretKey.isEmpty()));
     }
 
 }

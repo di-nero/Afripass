@@ -6,16 +6,17 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
-@Repository
-public interface EventInventoryRepository extends JpaRepository<EventInventory , Long> {
-    //pessimistic lock comes here
+
+public interface EventInventoryRepository extends JpaRepository<EventInventory, Long> {
+    // Locks the inventory row to prevent concurrent seat updates.
     boolean existsByEventId(Long eventId);
+
     Optional<EventInventory> findByEventId(Long eventId);
+
     @Lock(LockModeType.PESSIMISTIC_WRITE)
-    @Query("SELECT e FROM EventInventory e WHERE e.id = :eventId")
-    EventInventory findByEventIdWithLock(@Param("eventId") Long id);
+    @Query("SELECT e FROM EventInventory e WHERE e.eventId = :eventId")
+    Optional<EventInventory> findByEventIdWithLock(@Param("eventId") Long eventId);
 }

@@ -19,19 +19,18 @@ import java.util.List;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class EventPublisher {
+public class BookingEventPublisher {
 
     private final RabbitTemplate rabbitTemplate;
 
     @Async("taskExecutor")
-    public void publishBookingConfirmed(Booking booking , User user , EventDetails eventDetails, List<String> ticketNumbers , BigDecimal totalAmount){
+    public void publishBookingConfirmed(Booking booking, User user, EventDetails eventDetails, List<String> ticketNumbers, BigDecimal totalAmount) {
 
         BookingConfirmedEvent event = new BookingConfirmedEvent();
         event.setBookingId(booking.getId());
         event.setTicketNumber(ticketNumbers);
         event.setEventName(eventDetails.getEventName());
         event.setAmount(totalAmount);
-        event.setConfirmedAt(eventDetails.getDate());
         event.setHolderName(user.getName());
         event.setEmail(user.getEmail());
         event.setConfirmedAt(LocalDateTime.now());

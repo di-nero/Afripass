@@ -12,8 +12,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableScheduling
 public class AfriPassApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(AfriPassApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(AfriPassApplication.class, args);
+    }
 
 }

@@ -20,7 +20,7 @@ public class BookEventController {
     private BookingService bookingService;
 
     @PostMapping
-    public ResponseEntity<BookingResponse> bookEvent(@Valid @RequestBody BookingRequest request){
+    public ResponseEntity<BookingResponse> bookEvent(@Valid @RequestBody BookingRequest request) {
 
         return ResponseEntity.ok(bookingService.bookEvent(request));
 

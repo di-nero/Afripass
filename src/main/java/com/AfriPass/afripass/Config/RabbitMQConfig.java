@@ -2,13 +2,14 @@ package com.AfriPass.afripass.Config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.core.*;
+import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
 @Configuration
 public class RabbitMQConfig {
 
@@ -18,29 +19,29 @@ public class RabbitMQConfig {
     public static final String DEAD_LETTER_QUEUE = "dead.letter.queue";
 
     @Bean
-    public DirectExchange exchange(){
+    public DirectExchange exchange() {
         return new DirectExchange(EXCHANGE);
     }
 
     @Bean
-    public Queue notificationQueue(){
+    public Queue notificationQueue() {
 
         return QueueBuilder
                 .durable(QUEUE)
                 .withArgument("x-dead-letter-exchange", "")
-                .withArgument("x-dead-letter-routing-key" , DEAD_LETTER_QUEUE)
+                .withArgument("x-dead-letter-routing-key", DEAD_LETTER_QUEUE)
                 .build();
     }
 
     @Bean
-    public Queue deadLetterQueue(){
+    public Queue deadLetterQueue() {
         return QueueBuilder
                 .durable(DEAD_LETTER_QUEUE)
                 .build();
     }
 
     @Bean
-    public Binding binding(Queue notificationQueue , DirectExchange exchange){
+    public Binding binding(Queue notificationQueue, DirectExchange exchange) {
         return BindingBuilder.bind(notificationQueue).to(exchange).with(ROUTING_KEY);
     }
 

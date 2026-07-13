@@ -9,7 +9,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 @RestControllerAdvice
@@ -48,11 +48,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiResponse<Map<String, String>>> handleValidation(MethodArgumentNotValidException ex) {
-        Map<String, String> errors = new HashMap<>();
+        Map<String, String> errors = new LinkedHashMap<>();
         ex.getBindingResult().getFieldErrors().forEach(error ->
                 errors.put(error.getField(), error.getDefaultMessage())
         );
-        return ResponseEntity.badRequest().body(ApiResponse.error("Validation failed" , HttpStatus.BAD_REQUEST.value() , errors));
+        return ResponseEntity.badRequest().body(ApiResponse.error("Validation failed", HttpStatus.BAD_REQUEST.value(), errors));
     }
 
     @ExceptionHandler(Exception.class)
@@ -62,6 +62,6 @@ public class GlobalExceptionHandler {
     }
 
     private ResponseEntity<ApiResponse<Void>> buildResponse(HttpStatus status, String message) {
-        return ResponseEntity.status(status).body(ApiResponse.error(message , status.value()));
+        return ResponseEntity.status(status).body(ApiResponse.error(message, status.value()));
     }
 }

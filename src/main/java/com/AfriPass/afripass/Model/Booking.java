@@ -2,6 +2,7 @@ package com.AfriPass.afripass.Model;
 
 import com.AfriPass.afripass.Enums.BookingStatus;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -10,7 +11,8 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "booking")
 @EqualsAndHashCode(of = "id") //find meaning
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -20,23 +22,25 @@ public class Booking {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    @Column(nullable = false)
     private Long eventId;
 
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private BookingStatus bookingStatus;
 
     @CreationTimestamp
-    private LocalDateTime createsAt;
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdAt;
 
+    @Min(1)
+    @Column(nullable = false)
     private int quantity;
 
     private LocalDateTime expiresAt;
 
 }
-
-//one user can book for 5 people that why i introduced quantity
-// since a user can book for multiple people it should generate multiple tickets too and
-// reflect the amount of each ticket in the notification

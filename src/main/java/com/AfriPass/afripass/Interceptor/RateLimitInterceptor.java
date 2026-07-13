@@ -18,48 +18,48 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 public class RateLimitInterceptor implements HandlerInterceptor {
 
-    private final ConcurrentHashMap<String , Bucket> buckets = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, Bucket> buckets = new ConcurrentHashMap<>();
 
     @Override
-    public boolean preHandle(HttpServletRequest request , HttpServletResponse response , Object handler) throws Exception {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
         String userId = SecurityContextHolder.getContext().getAuthentication().getName();
 
-        if (userId == null){
+        if (userId == null) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             response.getWriter().write("Authentication required");
             return false;
         }
 
-        Bucket bucket  = resolveBucket(userId);
+        Bucket bucket = resolveBucket(userId);
 
         ConsumptionProbe probe = bucket.tryConsumeAndReturnRemaining(1);
 
-        if (probe.isConsumed()){
+        if (probe.isConsumed()) {
 
-            log.info("Request ALLOWED for user={} , token remaining={}", userId , probe.getRemainingTokens());
+            log.info("Request ALLOWED for user={} , token remaining={}", userId, probe.getRemainingTokens());
             return true;
 
         } else {
             long waitSeconds = probe.getNanosToWaitForRefill() / 1_000_000_000;
 
-            log.warn("Request REJECTED for user={} , retry after {}s", userId , waitSeconds);
+            log.warn("Request REJECTED for user={} , retry after {}s", userId, waitSeconds);
 
             response.setStatus(429);
-            response.setHeader("Retry-After" , String.valueOf(waitSeconds));
+            response.setHeader("Retry-After", String.valueOf(waitSeconds));
             response.getWriter().write("Too many requests. Try again in " + waitSeconds + " seconds.");
             return false;
         }
     }
 
-    private Bucket resolveBucket(String userId){
-        return buckets.computeIfAbsent(userId , id -> newBucket());
+    private Bucket resolveBucket(String userId) {
+        return buckets.computeIfAbsent(userId, id -> newBucket());
     }
 
-    private Bucket newBucket(){
+    private Bucket newBucket() {
 
-        Refill refill = Refill.greedy(5 , Duration.ofMinutes(1));
-        Bandwidth limit = Bandwidth.classic(5 , refill);
+        Refill refill = Refill.greedy(5, Duration.ofMinutes(1));
+        Bandwidth limit = Bandwidth.classic(5, refill);
 
         return Bucket.builder().addLimit(limit).build();
 

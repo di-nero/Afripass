@@ -8,6 +8,7 @@ import java.util.Optional;
 public interface EventCatalogClient {
 
     List<EventDetails> getAll();
+
     Optional<EventDetails> getById(Long id);
 
 }

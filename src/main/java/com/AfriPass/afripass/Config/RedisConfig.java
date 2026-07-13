@@ -13,24 +13,24 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import java.time.Duration;
 
-    @Configuration
-    @EnableCaching
-    public class RedisConfig {
+@Configuration
+@EnableCaching
+public class RedisConfig {
 
-        @Bean
-        public CacheManager cacheManager(RedisConnectionFactory redisConnectionFactory) {
-            RedisCacheConfiguration redisCacheConfiguration = RedisCacheConfiguration
-                    .defaultCacheConfig()
-                    .prefixCacheNameWith("afripass-")
-                    .serializeKeysWith(RedisSerializationContext.SerializationPair
-                            .fromSerializer(new StringRedisSerializer()))
-                    .serializeValuesWith(RedisSerializationContext.SerializationPair
-                            .fromSerializer(new JdkSerializationRedisSerializer()))
-                    .entryTtl(Duration.ofMinutes(30));
+    @Bean
+    public CacheManager cacheManager(RedisConnectionFactory redisConnectionFactory) {
+        RedisCacheConfiguration redisCacheConfiguration = RedisCacheConfiguration
+                .defaultCacheConfig()
+                .prefixCacheNameWith("afripass-")
+                .serializeKeysWith(RedisSerializationContext.SerializationPair
+                        .fromSerializer(new StringRedisSerializer()))
+                .serializeValuesWith(RedisSerializationContext.SerializationPair
+                        .fromSerializer(new JdkSerializationRedisSerializer()))
+                .entryTtl(Duration.ofMinutes(30));
 
-            return RedisCacheManager
-                    .builder(redisConnectionFactory)
-                    .cacheDefaults(redisCacheConfiguration)
-                    .build();
-        }
+        return RedisCacheManager
+                .builder(redisConnectionFactory)
+                .cacheDefaults(redisCacheConfiguration)
+                .build();
     }
+}
