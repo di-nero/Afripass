@@ -41,6 +41,6 @@ public class Booking {
     @Column(nullable = false)
     private int quantity;
 
-    private LocalDateTime expiredAt;
+    private LocalDateTime expiresAt;
 
 }
