@@ -38,12 +38,17 @@ public class BookingEventPublisher {
 
         log.info("Event = {}", event);
 
-        rabbitTemplate.convertAndSend(
-                RabbitMQConfig.EXCHANGE,
-                RabbitMQConfig.ROUTING_KEY,
-                event
-        );
+        try {
+            rabbitTemplate.convertAndSend(
+                    RabbitMQConfig.EXCHANGE,
+                    RabbitMQConfig.ROUTING_KEY,
+                    event
+            );
 
-        log.info("Sent to RabbitMQ");
+            log.info("Sent to RabbitMQ");
+
+        } catch (Exception e) {
+            log.error("Failed to send RabbitMQ message", e);
+        }
     }
 }
