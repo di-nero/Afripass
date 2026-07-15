@@ -36,13 +36,14 @@ public class BookingEventPublisher {
         event.setConfirmedAt(LocalDateTime.now());
         event.setEventDate(eventDetails.getDate());
 
-        log.info("Published BookingConfirmedEvent for bookingId={}, email={}",
-                booking.getId(), user.getEmail());
+        log.info("Event = {}", event);
 
         rabbitTemplate.convertAndSend(
                 RabbitMQConfig.EXCHANGE,
                 RabbitMQConfig.ROUTING_KEY,
                 event
         );
+
+        log.info("Sent to RabbitMQ");
     }
 }
