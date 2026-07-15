@@ -48,7 +48,8 @@ public class BookingEventPublisher {
             log.info("Sent to RabbitMQ");
 
         } catch (Exception e) {
-            log.error("Failed to send RabbitMQ message", e);
+            e.printStackTrace();
+            log.error("Failed to send RabbitMQ message: {}", e.getMessage());
         }
     }
 }
