@@ -18,8 +18,6 @@ spring:
     username: ${RABBITMQ_USERNAME}
     password: ${RABBITMQ_PASSWORD}
     virtual-host: ${RABBITMQ_VHOST}
-    ssl:
-     enabled: true
 
   data:
     redis:
